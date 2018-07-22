@@ -3,6 +3,8 @@
 #include <thread>
 #include <iostream>
 #include <boost/asio.hpp>
+#include <chrono>
+using namespace std::chrono_literals;
 
 //https://blog.csdn.net/byxdaz/article/details/71088812
 //https://blog.csdn.net/KnightOnHourse/article/details/80333238
@@ -21,10 +23,14 @@ void BoostTest::test_boost_asio() {
 		std::cout << "boost service destoryed!" << std::endl;
 	}).detach();
 
-	service->post([]() { 
+	for (int i = 0; i < 1000; ++i)
+		service->post([]() {
 		std::cout << std::this_thread::get_id() << std::endl;
+		std::this_thread::sleep_for(1ms);
 	});
-	
+
+	while (service->poll_one());
+
 }
 
 

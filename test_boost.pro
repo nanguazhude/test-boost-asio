@@ -2,6 +2,10 @@
 QT += core gui
 QT += widgets
 
+QT += core_private 
+QT += gui_private
+QT += widgets_private
+
 TARGET = test_boost
 TEMPLATE = app
 

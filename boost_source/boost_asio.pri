@@ -1,4 +1,5 @@
- 
+DEFINES += _WIN32_WINNT=0x0501 
+
 SOURCES += $$PWD/boost_chrono.cpp
 SOURCES += $$PWD/boost_config_info.cpp
 SOURCES += $$PWD/boost_cpp_regex_traits.cpp
