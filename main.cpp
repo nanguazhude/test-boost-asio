@@ -44,7 +44,7 @@ public:
 	int count = 0;
 	virtual void run() {
 		using namespace std::chrono_literals;
-		while (++count<600 ) {
+		while (++count < 600) {
 			std::cout << count << std::endl;
 			std::this_thread::sleep_for(1ms);
 		}
@@ -56,12 +56,26 @@ public:
 
 };
 
+
+#include <private/qthread_p.h>
+
+class AThread : public QThread {
+public:
+
+};
+
+#include <memory>
+
+ 
+
+#include "QtThread.hpp"
+
 int main(int argc, char *argv[]) {
 
 	//QApplication::setEventDispatcher(new  Dispatcher1);
 	QApplication app(argc, argv);
 
-	auto test = QThread::create([]() {
+	/*auto test = QThread::create([]() {
 		auto * test = new TestThread;
 		test->moveToThread(qApp->thread());
 		test->connect(test, &QThread::finished, test, &QThread::deleteLater);
@@ -69,10 +83,34 @@ int main(int argc, char *argv[]) {
 	}) ;
 	test->moveToThread(qApp->thread());
 	test->connect(test, &QThread::finished, test, &QThread::deleteLater);
-	test->start();
-	  
+	test->start();*/
 
-	std::cout << typeid(*app.eventDispatcher()).name() << std::endl;
+	{
+
+		class TestObject1 : public QObject{
+		public:
+			~TestObject1() {
+				std::cout << __func__ << std::endl;
+			}
+		};
+
+		QtThread<TestObject1> test;
+		test.start();
+
+		auto test1{ test };
+
+		std::cout << std::boolalpha << test.isQuit() << std::endl ;
+		//test.stop();
+		std::cout << std::boolalpha << test.isQuit() << std::endl;
+		{
+			auto object = test.object();
+			std::cout << object.use_count() << std::endl;
+		}
+	}
+
+
+
+	//std::cout << typeid(*app.eventDispatcher()).name() << std::endl;
 
 	MainWindow window;
 	//BoostTest test;
@@ -80,4 +118,5 @@ int main(int argc, char *argv[]) {
 	window.show();
 
 	return app.exec();
+	  
 }
