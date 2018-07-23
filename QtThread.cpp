@@ -14,3 +14,9 @@ void $T$QtThread::connnectQAppQuit(QObject * obj, std::function<void(void)> func
 		getQApp(),&QCoreApplication::aboutToQuit,
 		obj, func);
 }
+
+void $T$QtThread::RunObject::postEvent(std::function<void(void)> arg){
+	auto e = new RunEvent;
+	e->$m$RunFunction = std::move(arg);
+	QCoreApplication::postEvent(this,e);
+}
