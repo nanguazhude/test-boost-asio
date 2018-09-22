@@ -7,3 +7,5 @@
 *.vcxproj.user
 /.vs
 .qmake.stash
+/x64
+/GeneratedFiles

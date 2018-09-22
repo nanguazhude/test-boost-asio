@@ -1,5 +1,6 @@
 ﻿#include "BoostTest.hpp"
-
+#include <QtCore/qabstracteventdispatcher.h>
+#include <QtCore/qabstractnativeeventfilter.h> 
 #include <thread>
 #include <iostream>
 #include <boost/asio.hpp>
@@ -14,22 +15,42 @@ BoostTest::BoostTest() {
 
 }
 
+class NativeEventFilter : public QAbstractNativeEventFilter  {
+public:
+};
+
+
 void BoostTest::test_boost_asio() {
 
-	std::shared_ptr service = std::make_shared<io_service>();
-	std::thread([service]() {
-		boost::asio::io_service::work locker{ *service };
-		service->run();
-		std::cout << "boost service destoryed!" << std::endl;
-	}).detach();
+    if constexpr (false) {
+        std::shared_ptr service = std::make_shared<io_service>();
+        std::thread([service]() {
+            boost::asio::io_service::work locker{ *service };
+            service->run();
+            std::cout << "boost service destoryed!" << std::endl;
+        }).detach();
 
-	for (int i = 0; i < 1000; ++i)
-		service->post([]() {
-		std::cout << std::this_thread::get_id() << std::endl;
-		std::this_thread::sleep_for(1ms);
-	});
+        for (int i = 0; i < 1000; ++i)
+            service->post([]() {
+            std::cout << std::this_thread::get_id() << std::endl;
+            std::this_thread::sleep_for(1ms);
+        });
 
-	while (service->poll_one());
+        while (service->poll_one());
+    }
+
+    auto service = std::make_shared<io_service>() ;
+
+    service->post([]() {std::cout << "Hellow Word!" << std::endl; });
+
+    auto exec = service->get_executor();
+    
+
+    std::thread([service]() {
+        boost::asio::io_service::work locker{ *service };
+        service->run();
+        std::cout << "boost service destoryed!" << std::endl;
+    }).detach();
 
 }
 

@@ -38,4 +38,5 @@ FORMS += \
 
 INCLUDEPATH += $$PWD
 include($$PWD/boost_source/boost_asio.pri)
+#include($$PWD/qt_event_dispatcher/eventdispatchers.pri)
 
