@@ -104,10 +104,30 @@ public:
 
 };
 
+class TestObject : 
+    public QObject,
+    std::enable_shared_from_this<TestObject> {
+    bool event(QEvent * e) override {
+        std::cout << "this thread id : " << std::this_thread::get_id() << std::endl;
+        return QObject::event(e);
+    }
+};
+
+#include "QObjectBoostAsioEventLoop.hpp"
+
+
 int main(int argc, char *argv[]) {
     
     //QCoreApplication::setEventDispatcher(new ThisMainThreadEventDispatcher);
     QApplication app(argc, argv);
+
+    std::cout << "this thread id : " << std::this_thread::get_id() << std::endl;
+
+    auto obj = std::make_shared<TestObject>();
+    obj->setParent(&app);
+    std::thread([obj]() {
+        QCoreApplication::postEvent(obj.get(), new QEvent{QEvent::MaxUser});
+    }).detach();
 
     //auto varEventDispatcher = QCoreApplication::eventDispatcher();
     //varEventDispatcher->wakeUp();
@@ -162,9 +182,12 @@ int main(int argc, char *argv[]) {
     auto obj1 = new QObject1;
     QCoreApplication::postEvent(obj1,new QEvent(QEvent::MaxUser));
     QCoreApplication::instance()->installEventFilter(obj1);
+    
+    auto varEventLoop = std::make_shared<QObjectBoostAsioEventLoop>();
+    //QTimer::singleShot(0, &app, [varEventLoop]() {varEventLoop->exec(); });
 
     return app.exec();
-
+    //varEventLoop->exec();
 }
 
 static void preRoutineMyDebugTool(){

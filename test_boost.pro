@@ -27,11 +27,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         MainWindow.cpp \
-    BoostTest.cpp
+    BoostTest.cpp \
+    QObjectBoostAsioEventLoop.cpp
 
 HEADERS += \
         MainWindow.hpp \
-    BoostTest.hpp
+    BoostTest.hpp \
+    QObjectBoostAsioEventLoop.hpp
 
 FORMS += \
         MainWindow.ui

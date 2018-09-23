@@ -15,7 +15,8 @@ BoostTest::BoostTest() {
 
 }
 
-class NativeEventFilter : public QAbstractNativeEventFilter  {
+class NativeEventFilter :
+    public QAbstractNativeEventFilter  {
 public:
 };
 
@@ -45,6 +46,8 @@ void BoostTest::test_boost_asio() {
 
     auto exec = service->get_executor();
     
+    boost::asio::deadline_timer timer{ *service };
+    //boost::asio::defer(*service);
 
     std::thread([service]() {
         boost::asio::io_service::work locker{ *service };
